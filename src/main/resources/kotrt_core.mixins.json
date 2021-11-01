@@ -1,0 +1,24 @@
+{
+  "required": true,
+  "package": "vice.kotrt_core.mixins",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "kotrt_core.refmap.json",
+  "mixins": [
+    "EntityTick.EntityTickMixin",
+    "FixServerChunkProviderAlloc.ChunkManagerAccessMixin",
+    "FixServerChunkProviderAlloc.FixServerChunkProviderAllocMixin",
+    "FluidPerformance.FluidStateMixin",
+    "RecipeCaching.RecipeCachingMixin",
+    "Sodium.SodiumChunkUpdateMixin",
+    "WorldEntitySpawnerOptimization.WorldEntitySpawnerOptimizationMixin"
+  ],
+  "minVersion": "0.8",
+  "client": [
+    "CloudHeight.CloudHeightMixin",
+    "EntityDistance.MaxDistanceEntity",
+    "EntityDistance.MaxDistanceTileEntity",
+    "FrameCounter.FpsAccessorMixin",
+    "FrameCounter.FrameCounterMixin",
+    "Sodium.SodiumSettingsMixin"
+  ]
+}

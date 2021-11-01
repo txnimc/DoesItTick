@@ -39,7 +39,7 @@ archivesBaseName = 'kotrt_core'
 java.toolchain.languageVersion = JavaLanguageVersion.of(8)
 
 minecraft {
-    mappings channel: 'official', version: "${minecraft_version}"
+    mappings channel: "${mappings_channel}", version: "${mappings_version}"
     accessTransformer = file('src/main/resources/META-INF/accesstransformer.cfg')
 
     runs {
@@ -49,8 +49,10 @@ minecraft {
             //jvmArgs '-XX:+UnlockCommercialFeatures' // uncomment for profiling
             property 'forge.logging.console.level', 'info'
             property 'fml.earlyprogresswindow', 'false'
-            property 'mixin.env.remapRefMap', 'true'
+
+            property 'mixin.env.remapRefMap', 'false'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
+
             mods {
                 kotrt_core {
                     source sourceSets.main
@@ -78,7 +80,7 @@ minecraft {
             property 'fml.earlyprogresswindow', 'false'
             property 'mixin.env.remapRefMap', 'true'
             property 'mixin.env.refMapRemappingFile', "${projectDir}/build/createSrgToMcp/output.srg"
-            args '--mod', 'kotrt_core', '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources')
+            args '--mod', String.valueOf(mod_id), '--all', '--output', file('src/generated/resources/'), '--existing', file('src/main/resources')
             mods {
                 kotrt_core {
                     source sourceSets.main
@@ -109,14 +111,7 @@ repositories {
     maven {
         url = "https://www.cursemaven.com"
     }
-    maven {
-        name = "Curios"
-        url = "https://maven.theillusivec4.top/"
-    }
-    maven
-    {
-        url = "https://maven.blamejared.com/"
-    }
+    mavenCentral()
 }
 
 configurations {
@@ -124,63 +119,25 @@ configurations {
 }
 
 dependencies {
-    compileOnly 'org.projectlombok:lombok:1.18.22'
-    annotationProcessor 'org.projectlombok:lombok:1.18.22'
-
-    testCompileOnly 'org.projectlombok:lombok:1.18.22'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
-
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
+
+    //compileOnly 'org.projectlombok:lombok:1.18.22'
+    //annotationProcessor 'org.projectlombok:lombok:1.18.22'
+//
+    //testCompileOnly 'org.projectlombok:lombok:1.18.22'
+    //testAnnotationProcessor 'org.projectlombok:lombok:1.18.22'
+
 
     def registrate = "com.tterrag.registrate:Registrate:MC1.16.5-${registrate_version}"
     implementation fg.deobf(registrate)
     shade registrate
 
-    // emojiful
-    compileOnly fg.deobf("curse.maven:emojiful-284324:3184796")
-    runtimeOnly fg.deobf("curse.maven:emojiful-284324:3184796")
-
-    compileOnly fg.deobf("curse.maven:ftbchunks-314906:3509329")
-    compileOnly fg.deobf("curse.maven:ftblibrary-404465:3514173")
-
-    runtimeOnly fg.deobf("curse.maven:ftbchunks-314906:3509329")
-    runtimeOnly fg.deobf("curse.maven:architectury-419699:3500014")
-    runtimeOnly fg.deobf("curse.maven:ftblibrary-404465:3514173")
-    runtimeOnly fg.deobf("curse.maven:ftbteams-404468:3492657")
-
-
-    // Project Red
-    compileOnly fg.deobf("curse.maven:CodeChicken-242818:3456069")
-
-    runtimeOnly fg.deobf("curse.maven:cbmulti-258426:3459903")
-    runtimeOnly fg.deobf("curse.maven:scourge-471286:3276638")
-    runtimeOnly fg.deobf("curse.maven:CodeChicken-242818:3456069")
-    runtimeOnly fg.deobf("curse.maven:prcore-228702:3407713")
-    runtimeOnly fg.deobf("curse.maven:printegration-229045:3407714")
-    runtimeOnly fg.deobf("curse.maven:prtransmission-478939:3407718")
-
-
-    compileOnly fg.deobf("curse.maven:jei-238222:3438494")
-    compileOnly fg.deobf("curse.maven:magnesium-532724:3503910")
-
-    runtimeOnly fg.deobf("curse.maven:magnesium-532724:3503910")
     runtimeOnly fg.deobf("curse.maven:jei-238222:3438494")
     runtimeOnly fg.deobf("curse.maven:jer-240630:3066754")
-    runtimeOnly fg.deobf("curse.maven:jade-324717:3467445")
-    runtimeOnly fg.deobf("curse.maven:spark-361579:3337641")
-    runtimeOnly fg.deobf("curse.maven:lazydfu-433518:3209972")
-    runtimeOnly fg.deobf("curse.maven:smoothboot-420913:3224252")
-    runtimeOnly fg.deobf("curse.maven:alltheores-405593:3405905")
-    runtimeOnly fg.deobf("curse.maven:cofh-69162:3407019")
-    runtimeOnly fg.deobf("curse.maven:thermalfoundation-222880:3412300")
-    runtimeOnly fg.deobf("curse.maven:thermalexpansion-69163:3404884")
-    runtimeOnly fg.deobf("curse.maven:engineers-313866:3390489")
-    runtimeOnly fg.deobf("curse.maven:immersive-231951:3497359")
-    runtimeOnly fg.deobf("curse.maven:patchouli-306770:3459118")
-    //runtimeOnly fg.deobf("curse.maven:alex-426558:3467280")
-    //runtimeOnly fg.deobf("curse.maven:citadel-331936:3441028")
+    runtimeOnly fg.deobf("curse.maven:hwyla-253449:3033593")
+    runtimeOnly fg.deobf("curse.maven:magnesium-532724:3503910")
 
-    annotationProcessor 'org.spongepowered:mixin:0.8.3:processor'
+    annotationProcessor 'org.spongepowered:mixin:0.8.2:processor'
 }
 
 jar {
@@ -202,7 +159,7 @@ jar {
 shadowJar {
     classifier = ''
     configurations = [project.configurations.shade]
-    relocate 'com.tterrag.registrate', 'com.tterrag.kotrt_core.repack.registrate'
+    relocate 'com.tterrag.registrate', 'com.tterrag.' + String.valueOf(mod_id) + '.repack.registrate'
 }
 
 reobf {

@@ -1,0 +1,1 @@
+Description on curseforge, I can't be bothered to keep them in sync.
